@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:wear/wear.dart';
 
@@ -15,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Cronómetro',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.compact,
@@ -44,7 +43,7 @@ class WatchScreen extends StatelessWidget {
 
 class TimerScreen extends StatefulWidget {
   // const TimerScreen({super.key});
-  
+
   final WearMode mode;
 
   const TimerScreen(this.mode, {super.key});
@@ -70,22 +69,54 @@ class _TimerScreenState extends State<TimerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: widget.mode == WearMode.active ? Colors.white : Colors.black,
+      backgroundColor:
+          widget.mode == WearMode.active ? Colors.white : Colors.grey[700],
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Center(
-              child: FlutterLogo(),
-            ),
-            const SizedBox(height: 4.0),
+            // add tittle to the screen
+            widget.mode == WearMode.active
+                ? const Center(
+                    child: Text(
+                      "Cronómetro",
+                      style: TextStyle(
+                          color: Colors.blueAccent,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )
+                : const Center(
+                    child: Text(
+                      "Cronómetro",
+                      style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+            const SizedBox(height: 6.0),
+            widget.mode == WearMode.active
+                ? const Center(
+                    child: Icon(
+                    Icons.timer,
+                    size: 20,
+                    color: Colors.blueAccent,
+                  ))
+                : const Center(
+                    child: Icon(
+                    Icons.timer,
+                    size: 20,
+                    color: Colors.green,
+                  )),
             Center(
               child: Text(
                 _strCount,
                 style: TextStyle(
                     color: widget.mode == WearMode.active
-                        ? Colors.black
-                        : Colors.white),
+                        ? Colors.blueAccent
+                        : Colors.green,
+                    fontSize: 40),
               ),
             ),
             _buildWidgetButton(),
@@ -97,47 +128,117 @@ class _TimerScreenState extends State<TimerScreen> {
 
   Widget _buildWidgetButton() {
     if (widget.mode == WearMode.active) {
+      //? WearMode.active
       return Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          ElevatedButton(
-            // color: Colors.blue,
-            // textColor: Colors.white,
-            onPressed: () {
-              if (_status == "Start") {
-                _startTimer();
-              } else if (_status == "Stop") {
-                _timer.cancel();
-                setState(() {
-                  _status = "Continue";
-                });
-              } else if (_status == "Continue") {
-                _startTimer();
-              }
-            },
-            child: Text(_status),
-          ),
-          ElevatedButton(
-            // color: Colors.blue,
-            // textColor: Colors.white,
-            onPressed: () {
-              // ignore: unnecessary_null_comparison
-              if (_timer != null) {
-                _timer.cancel();
-                setState(() {
-                  _count = 0;
-                  _strCount = "00:00:00";
-                  _status = "Start";
-                });
-              }
-            },
-            child: const Text("Reset"),
+          Column(
+            children: [
+              ElevatedButton(
+
+                  // textColor: Colors.white,
+                  onPressed: () {
+                    if (_status == "Start") {
+                      _startTimer();
+                    } else if (_status == "Stop") {
+                      _timer.cancel();
+                      setState(() {
+                        _status = "Continue";
+                      });
+                    } else if (_status == "Continue") {
+                      _startTimer();
+                    }
+                  },
+                  child: Icon(
+                    _status == "Start"
+                        ? Icons.play_arrow
+                        : _status == "Stop"
+                            ? Icons.stop
+                            : Icons.play_arrow,
+                    color: Colors.blueAccent,
+                  )),
+              _status == "Continue"
+                  ? ElevatedButton(
+                      // color: Colors.blue,
+                      // textColor: Colors.white,
+                      onPressed: () {
+                        // ignore: unnecessary_null_comparison
+                        if (_timer != null) {
+                          _timer.cancel();
+                          setState(() {
+                            _count = 0;
+                            _strCount = "00:00:00";
+                            _status = "Start";
+                          });
+                        }
+                      },
+                      child: const Icon(
+                        Icons.refresh,
+                        color: Colors.blueAccent,
+                      ),
+                    )
+                  : const SizedBox(width: 0, height: 0),
+            ],
           ),
         ],
       );
     } else {
-      return Container();
+      //? WearMode.ambient
+      return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Column(
+            children: [
+              ElevatedButton(
+                  // color: Colors.blue,
+                  // textColor: Colors.white,
+                  onPressed: () {
+                    if (_status == "Start") {
+                      _startTimer();
+                    } else if (_status == "Stop") {
+                      _timer.cancel();
+                      setState(() {
+                        _status = "Continue";
+                      });
+                    } else if (_status == "Continue") {
+                      _startTimer();
+                    }
+                  },
+                  child: Icon(
+                    _status == "Start"
+                        ? Icons.play_arrow
+                        : _status == "Stop"
+                            ? Icons.stop
+                            : Icons.play_arrow,
+                    color: Colors.green,
+                  )),
+              _status == "Continue"
+                  ? ElevatedButton(
+                      // color: Colors.blue,
+                      // textColor: Colors.white,
+                      onPressed: () {
+                        // ignore: unnecessary_null_comparison
+                        if (_timer != null) {
+                          _timer.cancel();
+                          setState(() {
+                            _count = 0;
+                            _strCount = "00:00:00";
+                            _status = "Start";
+                          });
+                        }
+                      },
+                      child: const Icon(
+                        Icons.refresh,
+                        color: Colors.green,
+                      ),
+                    )
+                  : const SizedBox(width: 0, height: 0),
+            ],
+          ),
+        ],
+      );
     }
   }
 
